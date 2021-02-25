@@ -31,6 +31,12 @@ parameters:
     options:
       - github
       - circlci
+  - field: circleci_api_key
+    label: "Circle CI API Key to setup your CI/CD for repositories"
+    conditions:
+    - action: KeyMatchCondition
+      matchField: platform
+      whenValue: "circlci"
   - field: useExistingAwsProfile
     label: "Use credentials from an existing AWS profile?"
     options:

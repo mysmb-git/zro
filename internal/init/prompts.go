@@ -252,9 +252,9 @@ func paramConditionsMapper(conditions []moduleconfig.Condition) CustomConditionS
 		return NoCondition
 	} else {
 		return func(params map[string]string) bool {
-			// If any condition fails means prompt should be skipped, thus return false
+			// Prompts must pass every condition to proceed
 			for i := 0; i < len(conditions); i++ {
-				if !conditionMapper(conditions[i])(params) {
+				if !conditionHandler(conditions[i])(params) {
 					flog.Debugf("Did not meet condition %v, expected %v to be %v", conditions[i].Action, conditions[i].MatchField, conditions[i].WhenValue)
 					return false
 				}
@@ -263,7 +263,7 @@ func paramConditionsMapper(conditions []moduleconfig.Condition) CustomConditionS
 		}
 	}
 }
-func conditionMapper(cond moduleconfig.Condition) CustomConditionSignature {
+func conditionHandler(cond moduleconfig.Condition) CustomConditionSignature {
 	if cond.Action == "KeyMatchCondition" {
 		return KeyMatchCondition(cond.MatchField, cond.WhenValue)
 	} else {
