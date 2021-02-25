@@ -49,9 +49,9 @@ func Init(outDir string, localModulePath string) *projectconfig.ZeroProjectConfi
 	// Prompting for push-up stream, then conditionally prompting for github
 	initParams["GithubRootOrg"] = prompts["GithubRootOrg"].GetParam(initParams)
 	projectCredentials := globalconfig.GetProjectCredentials(projectConfig.Name)
-	credentialPrompts := getCredentialPrompts(projectCredentials, moduleConfigs)
-	projectCredentials = promptCredentialsAndFillProjectCreds(credentialPrompts, projectCredentials)
-	globalconfig.Save(projectCredentials)
+	// credentialPrompts := getCredentialPrompts(projectCredentials, moduleConfigs)
+	// projectCredentials = promptCredentialsAndFillProjectCreds(credentialPrompts, projectCredentials)
+	// globalconfig.Save(projectCredentials)
 	projectParameters := promptAllModules(moduleConfigs, projectCredentials)
 
 	// Map parameter values back to specific modules
@@ -117,20 +117,6 @@ func loadAllModules(moduleSources []string) (map[string]moduleconfig.ModuleConfi
 		mappedSources[mod.Name] = moduleSource
 	}
 	return modules, mappedSources
-}
-
-// promptAllModules takes a map of all the modules and prompts the user for values for all the parameters
-func promptAllModules(modules map[string]moduleconfig.ModuleConfig, projectCredentials globalconfig.ProjectCredential) map[string]string {
-	parameterValues := map[string]string{"projectName": projectCredentials.ProjectName}
-	for _, config := range modules {
-		var err error
-
-		parameterValues, err = PromptModuleParams(config, parameterValues, projectCredentials)
-		if err != nil {
-			exit.Fatal("Exiting prompt:  %v\n", err)
-		}
-	}
-	return parameterValues
 }
 
 // Project name is prompt individually because the rest of the prompts

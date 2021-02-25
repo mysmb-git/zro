@@ -11,6 +11,7 @@ import (
 
 	"github.com/commitdev/zero/pkg/util/flog"
 	"github.com/iancoleman/strcase"
+	"github.com/pkg/errors"
 )
 
 type ModuleConfig struct {
@@ -25,14 +26,17 @@ type ModuleConfig struct {
 }
 
 type Parameter struct {
-	Field           string
-	Label           string   `yaml:"label,omitempty"`
-	Options         []string `yaml:"options,omitempty"`
-	Execute         string   `yaml:"execute,omitempty"`
-	Value           string   `yaml:"value,omitempty"`
-	Default         string   `yaml:"default,omitempty"`
-	Info            string   `yaml:"info,omitempty"`
-	FieldValidation Validate `yaml:"fieldValidation,omitempty"`
+	Field               string
+	Label               string      `yaml:"label,omitempty"`
+	Options             []string    `yaml:"options,omitempty"`
+	Execute             string      `yaml:"execute,omitempty"`
+	Value               string      `yaml:"value,omitempty"`
+	Default             string      `yaml:"default,omitempty"`
+	Info                string      `yaml:"info,omitempty"`
+	FieldValidation     Validate    `yaml:"fieldValidation,omitempty"`
+	Type                string      `yaml:"type,omitempty"`
+	OmitFromProjectFile bool        `yaml:"omitFromProjectFile,omitempty"`
+	Conditions          []Condition `yaml:"conditions,omitempty"`
 }
 
 type Condition struct {
@@ -76,6 +80,7 @@ func LoadModuleConfig(filePath string) (ModuleConfig, error) {
 		return config, err
 	}
 
+	validateParams(config.Parameters)
 	missing := config.collectMissing()
 	if len(missing) > 0 {
 		flog.Errorf("%v is missing information", filePath)
@@ -88,6 +93,15 @@ func LoadModuleConfig(filePath string) (ModuleConfig, error) {
 	}
 
 	return config, nil
+}
+
+func validateParams(params []Parameter) error {
+	for _, param := range params {
+		if param.Type != "" {
+			return errors.Errorf("type is not supported")
+		}
+	}
+	return nil
 }
 
 // Recurses through a datastructure to find any missing data.

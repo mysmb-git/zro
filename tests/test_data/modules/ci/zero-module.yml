@@ -31,3 +31,18 @@ parameters:
     options:
       - github
       - circlci
+  - field: useExistingAwsProfile
+    label: "Use credentials from an existing AWS profile?"
+    options:
+      - "yes"
+      - "no"
+    omitFromProjectFile: yes
+  - field: awsCredentials
+    label: "Tell me your password"
+    conditions:
+    - action: KeyMatchCondition
+      whenValue: "no"
+      matchField: useExistingAwsProfile
+    - action: KeyMatchCondition
+      whenValue: "some extra condition"
+      matchField: foo
