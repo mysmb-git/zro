@@ -132,7 +132,7 @@ var checkCmd = &cobra.Command{
 				command:    "jq",
 				args:       []string{"--version"},
 				regexStr:   `jq-(0|[1-9]\d*)\.(0|[1-9]\d*)\-?(0|[1-9]\d*)?`,
-				minVersion: "1.5.0",
+				minVersion: "1.6.0-rc1",
 				docsURL:    "https://stedolan.github.io/jq/download/",
 			},
 			{
